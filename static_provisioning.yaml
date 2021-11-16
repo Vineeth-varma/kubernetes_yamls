@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-test
+  namespace: <namespace>
+  labels:
+    app: test
+spec:
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 2Gi
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pvc-name
+    namespace: <namespace>
+  flexVolume:
+    driver: mapr.com/maprfs
+    options:
+      platinum: "true"
+      cldbHosts: <cldbhosts>
+      cluster: <cluster>
+      securityType: secure
+      ticketSecretName: ticket-secret
+      ticketSecretNamespace: <namespace>
+      volumePath: /<user>-vol
+      volumeMode: Filesystem
+  persistentVolumeReclaimPolicy: Retain
