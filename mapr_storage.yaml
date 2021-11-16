@@ -1,0 +1,49 @@
+apiVersion: v1
+data:
+  MAPR_CLUSTER_PASSWORD: <password>
+  MAPR_CLUSTER_USER: <user>
+kind: Secret
+metadata:
+  name: credential-secret
+  namespace: <namespace>
+type: Opaque
+---
+apiVersion: v1
+data:
+  CONTAINER_TICKET: <mapr_container_secret>
+kind: Secret
+metadata:
+  name: ticket-secret
+  namespace: <namespace>
+type: Opaque
+---
+allowVolumeExpansion: true
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sc
+parameters:
+  advisoryquota: 10M
+  cldbHosts: <cldbhost details>
+  cluster: <cluster_name>
+  group: <group>:dump,restore,m,d,fc
+  maprSecretName: credential-secret
+  maprSecretNamespace: <namespace>
+  mountPrefix: /pv
+  namePrefix: pv
+  readAce: g:<group>
+  readOnly: "false"
+  readonly: "0"
+  reclaimPolicy: Retain
+  restServers: <restserver>
+  rootdirgroup: <group>
+  rootdirperms: "777"
+  rootdiruser: <user>
+  securityType: secure
+  ticketSecretName: ticket-secret
+  ticketSecretNamespace: <namespace>
+  user: <user>:dump,restore,m,d,fc
+  writeAce: g:<group>
+provisioner: mapr.com/maprfs
+reclaimPolicy: Retain
+volumeBindingMode: Immediate
